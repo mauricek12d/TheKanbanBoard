@@ -35,6 +35,7 @@ export function UserFactory(sequelize: Sequelize): typeof User {
       username: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true,
       },
       password: {
         type: DataTypes.STRING,
@@ -44,6 +45,7 @@ export function UserFactory(sequelize: Sequelize): typeof User {
     {
       tableName: 'users',
       sequelize,
+      timestamps: true,
       hooks: {
         beforeCreate: async (user: User) => {
           await user.setPassword(user.password);

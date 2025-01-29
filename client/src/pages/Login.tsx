@@ -30,9 +30,9 @@ const Login = () => {
     }
 
     try {
-      const data = await login(loginData); // Call login API
-      if (data?.token) {
-        Auth.login(data.token); // Save token and log in the user
+      const token = await login(loginData); // Call login API
+      if (token) {
+        Auth.login(token); // Save token and log in the user
         navigate("/kanban"); // Redirect to the Kanban board
       } else {
         setError("Failed to authenticate. Please try again.");

@@ -1,4 +1,4 @@
-import jwtDecode, { JwtPayload } from 'jwt-decode';
+import { jwtDecode, JwtPayload } from 'jwt-decode';
 import type { UserData } from '../interfaces/UserData';
 
 class AuthService {
@@ -36,7 +36,7 @@ class AuthService {
     try {
       const decoded = jwtDecode<JwtPayload>(token);
       // Check the `exp` field in the token payload
-      return decoded?.exp && decoded.exp < Date.now() / 1000;
+      return decoded?.exp !== undefined && decoded.exp < Date.now() / 1000;
     } catch (err) {
       console.error('Error decoding token:', err);
       return true; // Treat as expired if decoding fails
