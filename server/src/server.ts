@@ -2,6 +2,8 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
 import routes from './routes/index.js';
 import { sequelize } from './models/index.js';
 
@@ -12,17 +14,20 @@ const forceDatabaseRefresh = false;
 //Middleware to parse incoming JSON data
 app.use(express.json());
 
-// Serves static files in the entire client's dist folder
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('../client/dist'));
-}
+// Required for __dirname in ES6 modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
-// ✅ Add a default route for `/` before the API routes
-app.get('/', (_, res) => {
-  res.status(200).send("✅ API is running...");
+// ✅ Serve React build files (Frontend)
+app.use(express.static(path.join(__dirname, '../../client/dist')));
+
+// ✅ Serve the frontend for any unknown routes (except API)
+app.get('*', (_req, res) => {
+  res.sendFile(path.join(__dirname, '../../client/dist', 'index.html'));
 });
 
-app.use(routes);
+// ✅ Use API routes under `/api`
+app.use('/api', routes);
 
 // Test database connection
 sequelize.authenticate()
