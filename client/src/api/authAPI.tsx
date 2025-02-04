@@ -2,7 +2,7 @@ import { UserLogin } from "../interfaces/UserLogin";
 
 const login = async (userInfo: UserLogin): Promise<string | null> => {
   try {
-    const response = await fetch('/auth/login', {
+    const response = await fetch('http://localhost:3001/auth/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -10,10 +10,9 @@ const login = async (userInfo: UserLogin): Promise<string | null> => {
       body: JSON.stringify(userInfo),
     });
 
-    // ✅ Handle Non-200 Responses (e.g., 401 Unauthorized)
     if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Login failed");
+      const errorText = await response.text();
+      throw new Error(`❌ API Error ${response.status}: ${errorText}`);
     }
 
     // ✅ Parse JSON Response
