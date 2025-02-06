@@ -35,11 +35,15 @@ class AuthService {
   isTokenExpired(token: string): boolean {
     try {
       const decoded = jwtDecode<JwtPayload>(token);
-      // Check the `exp` field in the token payload
-      return decoded?.exp !== undefined && decoded.exp < Date.now() / 1000;
+      if (decoded?.exp !== undefined && decoded.exp < Date.now() / 1000) {  
+        localStorage.removeItem("id_token"); // Remove expired token
+        return true;
+      }
+      return false;
     } catch (err) {
       console.error('Error decoding token:', err);
-      return true; // Treat as expired if decoding fails
+      localStorage.removeItem("id_token"); // Remove invalid token
+      return true;
     }
   }
 
@@ -57,7 +61,7 @@ class AuthService {
    */
   login(idToken: string): void {
     localStorage.setItem('id_token', idToken);
-    window.location.assign('/'); // Redirect to the home page
+    window.location.assign('/kanban'); // Redirect to the home page
   }
 
   /**

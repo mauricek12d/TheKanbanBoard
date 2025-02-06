@@ -1,130 +1,117 @@
 import { TicketData } from '../interfaces/TicketData';
 import { ApiMessage } from '../interfaces/ApiMessage';
-import Auth from '../utils/auth';
+import { getToken } from './authAPI';
+
+const API_BASE_URL = 'http://localhost:3001/api/tickets';
 
 const retrieveTickets = async () => {
   try {
-    const response = await fetch(
-      '/api/tickets/',
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${Auth.getToken()}`
-        }
+    const response = await fetch(`${API_BASE_URL}/`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${localStorage.getItem('id_token')}` 
       }
-    );
-    const data = await response.json();
+    });
 
-    if(!response.ok) {
-      throw new Error('invalid API response, check network tab!');
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`❌ API Error ${response.status}: ${errorText}`);
     }
 
-    return data;
+    return await response.json();
   } catch (err) {
-    console.log('Error from data retrieval: ', err);
+    console.error('❌ Error from data retrieval:', err);
     return [];
   }
 };
 
 const retrieveTicket = async (id: number | null): Promise<TicketData> => {
   try {
-    const response = await fetch(
-      `/api/tickets/${id}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${Auth.getToken()}`
-        }
+    const response = await fetch(`${API_BASE_URL}/${id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getToken()}`
       }
-    );
+    });
 
-    const data = await response.json();
-
-    if(!response.ok) {
-      throw new Error('Could not invalid API response, check network tab!');
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`❌ API Error ${response.status}: ${errorText}`);
     }
-    return data;
+
+    return await response.json();
   } catch (err) {
-    console.log('Error from data retrieval: ', err);
+    console.error('❌ Error from data retrieval:', err);
     return Promise.reject('Could not fetch singular ticket');
   }
-}
+};
 
 const createTicket = async (body: TicketData) => {
   try {
-    const response = await fetch(
-      '/api/tickets/', {
-        method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${Auth.getToken()}`
-          },
-        body: JSON.stringify(body)
-      }
+    const response = await fetch(`${API_BASE_URL}/`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getToken()}`
+      },
+      body: JSON.stringify(body)
+    });
 
-    )
-    const data = response.json();
-
-    if(!response.ok) {
-      throw new Error('invalid API response, check network tab!');
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`❌ API Error ${response.status}: ${errorText}`);
     }
 
-    return data;
-
+    return await response.json();
   } catch (err) {
-    console.log('Error from Ticket Creation: ', err);
+    console.error('❌ Error from Ticket Creation:', err);
     return Promise.reject('Could not create ticket');
   }
-}
+};
 
 const updateTicket = async (ticketId: number, body: TicketData): Promise<TicketData> => {
   try {
-    const response = await fetch(
-      `/api/tickets/${ticketId}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${Auth.getToken()}`
-        },
-        body: JSON.stringify(body)
-      }
-    )
-    const data = await response.json();
+    const response = await fetch(`${API_BASE_URL}/${ticketId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getToken()}`
+      },
+      body: JSON.stringify(body)
+    });
 
-    if(!response.ok) {
-      throw new Error('invalid API response, check network tab!');
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`❌ API Error ${response.status}: ${errorText}`);
     }
 
-    return data;
+    return await response.json();
   } catch (err) {
-    console.error('Update did not work', err);
+    console.error('❌ Update did not work:', err);
     return Promise.reject('Update did not work');
   }
 };
 
 const deleteTicket = async (ticketId: number): Promise<ApiMessage> => {
   try {
-    const response = await fetch(
-      `/api/tickets/${ticketId}`, {
-        method: 'DELETE',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${Auth.getToken()}`
-        }
+    const response = await fetch(`${API_BASE_URL}/${ticketId}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${getToken()}`
       }
-    )
-    const data = await response.json();
+    });
 
-    if(!response.ok) {
-      throw new Error('invalid API response, check network tab!');
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`❌ API Error ${response.status}: ${errorText}`);
     }
 
-    return data;
+    return await response.json();
   } catch (err) {
-    console.error('Error in deleting ticket', err);
+    console.error('❌ Error in deleting ticket:', err);
     return Promise.reject('Could not delete ticket');
   }
 };
 
-
-export { createTicket, deleteTicket, retrieveTickets, retrieveTicket, updateTicket};
+export { createTicket, deleteTicket, retrieveTickets, retrieveTicket, updateTicket };

@@ -4,6 +4,8 @@ import { userRouter } from './user-routes.js';
 
 const router = Router();
 
+console.log("Registering routes");
+
 router.use('/tickets', ticketRouter);
 router.use('/users', userRouter);
 

@@ -5,8 +5,26 @@ import { authenticateToken } from '../middleware/auth.js';
 
 const router = Router();
 
-router.use('/auth', authRoutes);
-// TODO: Add authentication to the API routes
-router.use('/api', authenticateToken, apiRoutes);
+console.log("🚀 Registering routes...");
 
-export default router;
+// ✅ Debugging log to check if `authRoutes` is defined
+if (!authRoutes) {
+    console.error("❌ ERROR: authRoutes is undefined! Check your import in index.ts.");
+  } else {
+    console.log("✅ authRoutes successfully imported.");
+  }
+
+// ✅ Debugging log to confirm routes are loaded
+router.use('/auth', (_req, _res, next) => {
+    console.log("✅ [DEBUG] Loading /auth routes...");
+    next();
+  }, authRoutes);
+  
+  router.use('/api', (_req, _res, next) => {
+    console.log("✅ Loading /api routes...");
+    next();
+  }, authenticateToken, apiRoutes);
+  
+  console.log("✅ Routes successfully registered!");
+  
+  export default router;
