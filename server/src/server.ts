@@ -35,14 +35,20 @@ app.use('/', (req, _res, next) => {
 // ✅ Serve React build files (Frontend)
 app.use(express.static(path.join(__dirname, '../../client/dist')));
 
-// ✅ Serve the frontend for any unknown routes (except API)
+app.get('/', (_req, res) => {
+  res.redirect('/api/tickets');
+  return;
+});
+
+// ✅ Serve frontend for unknown routes (except API)
 app.get('*', (req, res) => {
   if (req.url.includes('/api')) {
-    res.status(404).json({ message: 'Not Found' });
+    return res.status(404).json({ message: 'Not Found' });
   } else {
-    res.sendFile(path.join(__dirname, '../../client/dist', 'index.html'));
+    return res.sendFile(path.join(__dirname, '../../client/dist', 'index.html'));
   }
 });
+
 
 // ✅ Ensure routes are listed AFTER app initialization
 console.log("🚀 Listing all registered routes...");

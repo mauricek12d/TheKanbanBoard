@@ -61,7 +61,7 @@ class AuthService {
    */
   login(idToken: string): void {
     localStorage.setItem('id_token', idToken);
-    window.location.assign('/kanban'); // Redirect to the home page
+    window.location.assign('/'); // Redirect to the home page
   }
 
   /**

@@ -33,8 +33,8 @@ const Login = () => {
       const token = await login(loginData); // Call login API
       if (token) {
         Auth.login(token); // Save token and log in the user
-        navigate("/api/tickets/"); // Redirect to the home page
-      } else {
+        navigate("/");
+        } else {
         setError("Failed to authenticate. Please try again.");
       }
     } catch (err) {
