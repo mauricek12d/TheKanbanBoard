@@ -5,6 +5,7 @@ import expressListRoutes from 'express-list-routes';
 import dotenv from 'dotenv';
 import routes from './routes/index.js';  
 import { sequelize } from './models/index.js';
+import { seedAll} from './seeds/index.js';
 
 dotenv.config();
 const app = express();
@@ -60,8 +61,10 @@ sequelize.authenticate()
     console.log('✅ Database connected successfully.');
     return sequelize.sync({ force: forceDatabaseRefresh });
   })
-  .then(() => {
-    return seedDatabase();
+  .then(async () => {
+    console.log('✅ Database synchronized.');
+    await seedAll();
+    console.log('✅ Database seeded.');
   })
   .then(() => {
     app.listen(PORT, () => {
