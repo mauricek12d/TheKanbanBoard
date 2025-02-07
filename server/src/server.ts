@@ -61,6 +61,9 @@ sequelize.authenticate()
     return sequelize.sync({ force: forceDatabaseRefresh });
   })
   .then(() => {
+    return seedDatabase();
+  })
+  .then(() => {
     app.listen(PORT, () => {
       console.log(`✅ Server is running on http://localhost:${PORT}`);
     });
