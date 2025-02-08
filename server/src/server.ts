@@ -27,7 +27,7 @@ console.log("🚀 Registering API routes...");
 app.use('/api', routes);
 
 // ✅ Serve React build files (Frontend)
-app.use(express.static(path.join(__dirname, '../client/dist')));
+app.use(express.static(path.join(__dirname, '../../client/dist')));
 
 // ✅ Serve frontend index.html
 app.get('/', (_req, res) => {
@@ -39,7 +39,7 @@ app.get('*', (req, res) => {
   if (req.url.startsWith('/api')) {
     return res.status(404).json({ message: 'Not Found' });
   } else {
-    return res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
+    return res.sendFile(path.join(__dirname, '../../client/dist', 'index.html'));
   }
 });
 
