@@ -1,8 +1,11 @@
 import { UserLogin } from "../interfaces/UserLogin";
 
+// 🔹 Use environment variable for API URL
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3001";
+
 const login = async (userInfo: UserLogin): Promise<string | null> => {
   try {
-    const response = await fetch('http://localhost:3001/auth/login', {
+    const response = await fetch(`${API_BASE_URL}/auth/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -28,7 +31,7 @@ const login = async (userInfo: UserLogin): Promise<string | null> => {
     // ✅ Store Token Securely in Local Storage
     localStorage.setItem("id_token", token);
 
-    window.location.href = "http.//localhost:3001/api/tickets"; // Redirect to Tickets page
+    window.location.href = `${API_BASE_URL}/api/tickets`; 
 
     return token;
   } catch (error: unknown) {

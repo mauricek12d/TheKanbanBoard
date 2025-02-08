@@ -1,5 +1,10 @@
 import { defineConfig } from 'vite';
 
+const API_URL =
+  process.env.NODE_ENV === 'production'
+    ? 'https://thekanbanboard.onrender.com'
+    : 'http://localhost:3001';
+
 // https://vitejs.dev/config/
 export default defineConfig({
   server: {
@@ -7,14 +12,14 @@ export default defineConfig({
     open: true,
     proxy: {
       '/auth': {
-        target: 'http://localhost:3001',
+        target: API_URL,
         changeOrigin: true,
-        secure: false,
+        secure: API_URL.startsWith('https'),
       },
       '/api': {
-        target: 'http://localhost:3001',
+        target: API_URL,
         changeOrigin: true,
-        secure: false
+        secure: API_URL.startsWith('https'),
       },
     },
   },
