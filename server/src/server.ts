@@ -5,6 +5,7 @@ import expressListRoutes from 'express-list-routes';
 import dotenv from 'dotenv';
 import routes from './routes/index.js';  
 import { sequelize } from './models/index.js';
+import seedAll from './seeds/index.js';
 
 dotenv.config();
 const app = express();
@@ -19,11 +20,7 @@ const __dirname = path.dirname(__filename);
 app.use(express.json());
 
 // ✅ Debugging logs to confirm `routes` is properly loaded
-if (!routes) {
-  console.error("❌ ERROR: `routes` is undefined! Check the import in server.ts.");
-} else {
-  console.log("✅ `routes` successfully imported.");
-}
+console.log("✅ `routes` successfully imported.");
 
 // ✅ Register Routes (ensure `/auth` and `/api` are included)
 console.log("🚀 Registering API routes...");
@@ -37,7 +34,6 @@ app.use(express.static(path.join(__dirname, '../../client/dist')));
 
 app.get('/', (_req, res) => {
   res.redirect('/api/tickets');
-  return;
 });
 
 // ✅ Serve frontend for unknown routes (except API)
@@ -49,29 +45,29 @@ app.get('*', (req, res) => {
   }
 });
 
-
 // ✅ Ensure routes are listed AFTER app initialization
 console.log("🚀 Listing all registered routes...");
 expressListRoutes(app);  
 
-// ✅ Test database connection
+// ✅ Test database connection & Seed Database (Only in Render if ENV is set)
 sequelize.authenticate()
-  .then(() => {
+  .then(async () => {
     console.log('✅ Database connected successfully.');
-    return sequelize.sync({ force: forceDatabaseRefresh });
-  })
-  .then(() => {
+    await sequelize.sync({ force: forceDatabaseRefresh });
+
+    if (process.env.RUN_SEED === "true") {
+      console.log("🚀 Running database seed...");
+      await seedAll();
+    }
+
+    // ✅ Start server only after DB setup
     app.listen(PORT, () => {
       console.log(`✅ Server is running on http://localhost:${PORT}`);
+      expressListRoutes(app);
     });
-
-    // ✅ List all registered routes AFTER server starts
-    console.log("🚀 Final list of registered routes:");
-    expressListRoutes(app);
   })
   .catch((err) => {
     console.error('❌ Database connection error:', err);
   });
 
 export default app;
-
