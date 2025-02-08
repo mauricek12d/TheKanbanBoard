@@ -3,13 +3,13 @@ import { fileURLToPath } from 'url';
 import express from 'express';
 import expressListRoutes from 'express-list-routes';
 import dotenv from 'dotenv';
-import routes from './routes/index.js';  
 import { sequelize } from './models/index.js';
 import seedAll from './seeds/index.js';
 
 dotenv.config();
+
 const app = express();
-const PORT = process.env.PORT; // ✅ Use Render's dynamic port
+const PORT = process.env.PORT || 3001; // ✅ Render uses a dynamic port, fallback for local dev
 const forceDatabaseRefresh = false;
 
 // ✅ Required for __dirname in ES6 modules
@@ -19,19 +19,23 @@ const __dirname = path.dirname(__filename);
 // ✅ Middleware to parse JSON
 app.use(express.json());
 
-// ✅ Debugging logs to confirm `routes` is properly loaded
+// ✅ Debugging logs
 console.log("✅ `routes` successfully imported.");
 
-// ✅ Register API Routes
-console.log("🚀 Registering API routes...");
-app.use('/api', routes);
+// ✅ Explicitly Register Routes
+import authRoutes from './routes/auth-routes.js';
+import { ticketRouter } from './routes/api/ticket-routes.js';
+
+app.use('/auth', authRoutes);  // ✅ Ensure /auth/login works
+app.use('/api/tickets', ticketRouter);  // ✅ Ensure /api/tickets works
 
 // ✅ Serve React build files (Frontend)
-app.use(express.static(path.join(__dirname, '../../client/dist')));
+const clientDistPath = path.join(__dirname, '../../client/dist');
+app.use(express.static(clientDistPath));
 
-// ✅ Serve frontend index.html
+// ✅ Serve frontend for root `/`
 app.get('/', (_req, res) => {
-  res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
+  res.sendFile(path.join(clientDistPath, 'index.html'));
 });
 
 // ✅ Serve frontend for unknown routes (except API)
@@ -39,7 +43,7 @@ app.get('*', (req, res) => {
   if (req.url.startsWith('/api')) {
     return res.status(404).json({ message: 'Not Found' });
   } else {
-    return res.sendFile(path.join(__dirname, '../../client/dist', 'index.html'));
+    return res.sendFile(path.join(clientDistPath, 'index.html')); // ✅ Fix ENOENT issue
   }
 });
 
