@@ -1,9 +1,7 @@
 import { defineConfig } from 'vite';
 
 const API_URL =
-  import.meta.env.MODE === 'production'
-    ? 'https://thekanbanboard.onrender.com'
-    : 'http://localhost:3001';
+  process.env.VITE_API_URL || 'http://localhost:3001';
 
 // https://vitejs.dev/config/
 export default defineConfig({
