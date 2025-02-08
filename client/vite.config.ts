@@ -1,7 +1,7 @@
 import { defineConfig } from 'vite';
 
 const API_URL =
-  process.env.NODE_ENV === 'production'
+  import.meta.env.MODE === 'production'
     ? 'https://thekanbanboard.onrender.com'
     : 'http://localhost:3001';
 
