@@ -2,7 +2,7 @@ import { TicketData } from '../interfaces/TicketData';
 import { ApiMessage } from '../interfaces/ApiMessage';
 import { getToken } from './authAPI';
 
-const API_BASE_URL = 'http://localhost:3001/api/tickets';
+const API_BASE_URL = import.meta.env.VITE_API_URL + '/api/tickets';
 
 const retrieveTickets = async () => {
   try {
