@@ -72,7 +72,6 @@ DELETE /api/tickets/:id – Delete a ticket
 👥 Contributors
 My Github user name - mauricek12d
 
-📜 License
-This project is licensed under the MIT License.
+
 
 
