@@ -29,6 +29,8 @@ The Kanban Board is a full-stack web application designed to help users manage t
 ### Deployment:
 - Render (Server & Database)
 
+- Password to sign in is Username: JollyGuru - Passowrd is password 
+
 
 ## 🖥️ Installation & Setup
 
